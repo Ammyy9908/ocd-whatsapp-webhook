@@ -9,7 +9,7 @@ async function sendSlots(phone) {
             "messaging_product": "whatsapp",
         "to": phone,
         "type": "template",
-        "template": { "name": "slots_message", "language": { "code": "en_US" } ,
+        "template": { "name": "slot_message", "language": { "code": "en_US" } ,
     
     }
 },{
