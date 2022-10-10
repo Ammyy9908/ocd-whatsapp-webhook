@@ -28,6 +28,7 @@ app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 app.post("/webhook",async  (req, res) => {
   // Parse the request body from the POST
   let body = req.body;
+  console.log("Request Body", body)
 
   // Check the Incoming webhook message
   console.log(JSON.stringify(req.body, null, 2));
