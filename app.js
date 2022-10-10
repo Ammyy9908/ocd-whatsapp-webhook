@@ -20,6 +20,7 @@ const request = require("request"),
   app = express().use(body_parser.json()); // creates express http server
 const sendDateMessage = require("./utils/send_date_message");
 const sendSlots = require("./utils/send_slots_message");
+const sendSlotConfirm = require("./utils/send_slot_confirm");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
@@ -50,6 +51,9 @@ app.post("/webhook",async  (req, res) => {
       }
       else if(message_type==="button" && button_message==="Today"){
         console.log(await sendSlots(phone_number_id));
+      }
+      else if(message_type==="button" && (button_message==="12-3pm" || button_message=="3-6pm" || button_message=="6-9pm")){
+        console.log(await sendSlotConfirm(phone_number_id,button_message));
       }
     }
     res.sendStatus(200);
