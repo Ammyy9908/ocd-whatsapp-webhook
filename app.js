@@ -24,6 +24,7 @@ const sendDateMessage = require("./utils/send_date_message");
 const sendSlots = require("./utils/send_slots_message");
 const sendSlotConfirm = require("./utils/send_slot_confirm");
 const sendTommorrowConfirmedMessage = require("./utils/send_tommrow_confirmed_slot");
+const bookTomorrowSlot = require("./utils/book_tommorrow_slot");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
@@ -53,9 +54,24 @@ app.post("/webhook",async  (req, res) => {
       if(message_type==="button" && button_message==="Confirm"){
         console.log(await sendDateMessage(phone_number_id));
       }
+
+      if(message_type==="button" && button_message==="Tommorrow"){
+        let this_hour = new Date().getHours();
+        if(this_hour>=12 && this_hour>=8){
+          console.log(await bookTomorrowSlot(phone,"8am-12pm"));
+        }
+        else if(this_hour>=12 && this_hour<4){
+          console.log(await bookTomorrowSlot(phone,"12pm-4pm"));
+        }
+        else if(this_hour>=4 && this_hour<8){
+          console.log(await bookTomorrowSlot(phone,"4pm-8pm"));
+        }
+       
+      }
       else if(message_type==="button" && button_message==="Today"){
         console.log(await sendSlots(phone_number_id));
       }
+      
       else if(message_type==="button" && (button_message==="8am-12pm" || button_message=="12-4pm" || button_message=="4-8pm")){
         const current_hour = new Date().getHours();
         console.log("Current Hour",current_hour)
