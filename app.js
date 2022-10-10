@@ -5,6 +5,8 @@
  *
  */
 
+let slots = [];
+
 "use strict";
 
 // Access token for your app
@@ -21,6 +23,7 @@ const request = require("request"),
 const sendDateMessage = require("./utils/send_date_message");
 const sendSlots = require("./utils/send_slots_message");
 const sendSlotConfirm = require("./utils/send_slot_confirm");
+const sendTommorrowConfirmedMessage = require("./utils/send_tommrow_confirmed_slot");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
@@ -53,12 +56,21 @@ app.post("/webhook",async  (req, res) => {
       else if(message_type==="button" && button_message==="Today"){
         console.log(await sendSlots(phone_number_id));
       }
-      else if(message_type==="button" && (button_message==="12-3pm" || button_message=="3-6pm" || button_message=="6-9pm")){
+      else if(message_type==="button" && (button_message==="8am-12pm" || button_message=="12-4pm" || button_message=="4-8pm")){
         const current_hour = new Date().getHours();
-        // if(current_hour>=12 && current_hour<15){
-        //   console.log(await sendSlotConfirm(phone_number_id,button_message));
-        // }
-        // console.log(await sendSlotConfirm(phone_number_id,from,button_message));
+        if(current_hour>12 && button_message==="8am-12pm"){
+          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"8am-12pm"));
+        }
+        else if(current_hour>16 && button_message==="12-4pm"){
+          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"12-4pm"));
+        }
+        else if(current_hour>20 && button_message==="4-8pm"){
+          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"12-4pm"));
+        }
+        else{
+          console.log(await sendSlotConfirm(phone_number_id,from,button_message));
+        }
+        
       }
     }
     res.sendStatus(200);
