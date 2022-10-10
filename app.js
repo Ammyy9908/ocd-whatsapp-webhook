@@ -19,6 +19,7 @@ const request = require("request"),
   axios = require("axios").default,
   app = express().use(body_parser.json()); // creates express http server
 const sendDateMessage = require("./utils/send_date_message");
+const sendSlots = require("./utils/send_slots_message");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
@@ -46,6 +47,9 @@ app.post("/webhook",async  (req, res) => {
       let button_message =  req.body.entry[0].changes[0].value.messages[0].button.payload// extract the message text from the webhook payload
       if(message_type==="button" && button_message==="Confirm"){
         console.log(await sendDateMessage(phone_number_id));
+      }
+      else if(message_type==="button" && button_message==="Today"){
+        console.log(await sendSlots(phone_number_id));
       }
     }
     res.sendStatus(200);
