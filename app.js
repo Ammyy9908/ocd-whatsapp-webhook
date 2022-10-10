@@ -58,14 +58,15 @@ app.post("/webhook",async  (req, res) => {
       }
       else if(message_type==="button" && (button_message==="8am-12pm" || button_message=="12-4pm" || button_message=="4-8pm")){
         const current_hour = new Date().getHours();
-        if(current_hour>12 && button_message==="8am-12pm"){
+        console.log("Current Hour",current_hour)
+        if(current_hour>11 && button_message==="8am-12pm"){
           console.log(await sendTommorrowConfirmedMessage(phone_number_id,"8am-12pm"));
         }
-        else if(current_hour>16 && button_message==="12-4pm"){
+        else if(current_hour>15 && button_message==="12-4pm"){
           console.log(await sendTommorrowConfirmedMessage(phone_number_id,"12-4pm"));
         }
-        else if(current_hour>20 && button_message==="4-8pm"){
-          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"12-4pm"));
+        else if(current_hour>19 && button_message==="4-8pm"){
+          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"4-8pm"));
         }
         else{
           console.log(await sendSlotConfirm(phone_number_id,from,button_message));
