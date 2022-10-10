@@ -2,7 +2,7 @@ const axios = require("axios")
 const dotenv = require("dotenv")
 dotenv.config()
 
-async function sendSlotConfirm(phone,slot) {
+async function sendSlotConfirm(phone,from,slot) {
     const token = process.env.WHATSAPP_TOKEN;
     try{
         const r = await axios.post(`https://graph.facebook.com/v14.0/109549668467205/messages`,{
@@ -14,6 +14,7 @@ async function sendSlotConfirm(phone,slot) {
             {
                 "type": "body",
                 "parameters": [
+                     {"type":"text","text":from},
                     {"type":"text","text":slot}
                 ]}
          ]

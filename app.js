@@ -43,7 +43,7 @@ app.post("/webhook",async  (req, res) => {
     ) {
       let phone_number_id =
         req.body.entry[0].changes[0].value.contacts[0].wa_id;
-      let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
+      let from = req.body.entry[0].changes[0].value.contacts[0].profile.name; // extract the phone number from the webhook payload
       let message_type = req.body.entry[0].changes[0].value.messages[0].type;
       let button_message =  req.body.entry[0].changes[0].value.messages[0].button.payload// extract the message text from the webhook payload
       if(message_type==="button" && button_message==="Confirm"){
@@ -53,7 +53,7 @@ app.post("/webhook",async  (req, res) => {
         console.log(await sendSlots(phone_number_id));
       }
       else if(message_type==="button" && (button_message==="12-3pm" || button_message=="3-6pm" || button_message=="6-9pm")){
-        console.log(await sendSlotConfirm(phone_number_id,button_message));
+        console.log(await sendSlotConfirm(phone_number_id,from,button_message));
       }
     }
     res.sendStatus(200);
