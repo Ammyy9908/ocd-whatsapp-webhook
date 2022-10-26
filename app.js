@@ -59,13 +59,17 @@ app.post("/webhook", async (req, res) => {
       if (message_type === "button" && button_message === "Tommorrow") {
         let this_hour = new Date().getHours();
         if (this_hour > 8 || this_hour <= 12) {
-          console.log(await bookTomorrowSlot(phone_number_id, "8am-12pm"));
+          console.log(
+            await bookTomorrowSlot(from, phone_number_id, "8am-12pm")
+          );
         } else if (this_hour > 12 || this_hour < 16) {
-          console.log(await bookTomorrowSlot(phone_number_id, "12pm-4pm"));
+          console.log(
+            await bookTomorrowSlot(from, phone_number_id, "12pm-4pm")
+          );
         } else if (this_hour > 16 || this_hour < 20) {
-          console.log(await bookTomorrowSlot(phone_number_id, "4pm-8pm"));
+          console.log(await bookTomorrowSlot(from, phone_number_id, "4pm-8pm"));
         } else {
-          await bookTomorrowSlot(phone_number_id, "8am-12pm");
+          await bookTomorrowSlot(from, phone_number_id, "8am-12pm");
         }
       } else if (message_type === "button" && button_message === "Today") {
         console.log(await sendSlots(phone_number_id));
