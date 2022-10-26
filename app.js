@@ -7,7 +7,7 @@
 
 let slots = [];
 
-"use strict";
+("use strict");
 
 // Access token for your app
 // (copy token from DevX getting started page
@@ -29,10 +29,10 @@ const bookTomorrowSlot = require("./utils/book_tommorrow_slot");
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
 // Accepts POST requests at /webhook endpoint
-app.post("/webhook",async  (req, res) => {
+app.post("/webhook", async (req, res) => {
   // Parse the request body from the POST
   let body = req.body;
-  console.log("Request Body", body)
+  console.log("Request Body", body);
 
   // Check the Incoming webhook message
   console.log(JSON.stringify(req.body, null, 2));
@@ -50,44 +50,50 @@ app.post("/webhook",async  (req, res) => {
         req.body.entry[0].changes[0].value.contacts[0].wa_id;
       let from = req.body.entry[0].changes[0].value.contacts[0].profile.name; // extract the phone number from the webhook payload
       let message_type = req.body.entry[0].changes[0].value.messages[0].type;
-      let button_message =  req.body.entry[0].changes[0].value.messages[0].button.payload// extract the message text from the webhook payload
-      if(message_type==="button" && button_message==="Confirm"){
+      let button_message =
+        req.body.entry[0].changes[0].value.messages[0].button.payload; // extract the message text from the webhook payload
+      if (message_type === "button" && button_message === "Confirm") {
         console.log(await sendDateMessage(phone_number_id));
       }
 
-      if(message_type==="button" && button_message==="Tommorrow"){
+      if (message_type === "button" && button_message === "Tommorrow") {
         let this_hour = new Date().getHours();
-        if(this_hour>=12 && this_hour>=8){
-          console.log(await bookTomorrowSlot(phone,"8am-12pm"));
+        if (this_hour > 8 || this_hour <= 12) {
+          console.log(await bookTomorrowSlot(phone, "8am-12pm"));
+        } else if (this_hour > 12 || this_hour < 16) {
+          console.log(await bookTomorrowSlot(phone, "12pm-4pm"));
+        } else if (this_hour > 16 || this_hour < 20) {
+          console.log(await bookTomorrowSlot(phone, "4pm-8pm"));
+        } else {
+          await bookTomorrowSlot(phone, "8am-12pm");
         }
-        else if(this_hour>=12 && this_hour<4){
-          console.log(await bookTomorrowSlot(phone,"12pm-4pm"));
-        }
-        else if(this_hour>=4 && this_hour<8){
-          console.log(await bookTomorrowSlot(phone,"4pm-8pm"));
-        }
-       
-      }
-      else if(message_type==="button" && button_message==="Today"){
+      } else if (message_type === "button" && button_message === "Today") {
         console.log(await sendSlots(phone_number_id));
-      }
-      
-      else if(message_type==="button" && (button_message==="8am-12pm" || button_message=="12-4pm" || button_message=="4-8pm")){
+      } else if (
+        message_type === "button" &&
+        (button_message === "8am-12pm" ||
+          button_message == "12-4pm" ||
+          button_message == "4-8pm")
+      ) {
         const current_hour = new Date().getHours();
-        console.log("Current Hour",current_hour)
-        if(current_hour>11 && button_message==="8am-12pm"){
-          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"8am-12pm"));
+        console.log("Current Hour", current_hour);
+        if (current_hour > 11 && button_message === "8am-12pm") {
+          console.log(
+            await sendTommorrowConfirmedMessage(phone_number_id, "8am-12pm")
+          );
+        } else if (current_hour > 15 && button_message === "12-4pm") {
+          console.log(
+            await sendTommorrowConfirmedMessage(phone_number_id, "12-4pm")
+          );
+        } else if (current_hour > 19 && button_message === "4-8pm") {
+          console.log(
+            await sendTommorrowConfirmedMessage(phone_number_id, "4-8pm")
+          );
+        } else {
+          console.log(
+            await sendSlotConfirm(phone_number_id, from, button_message)
+          );
         }
-        else if(current_hour>15 && button_message==="12-4pm"){
-          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"12-4pm"));
-        }
-        else if(current_hour>19 && button_message==="4-8pm"){
-          console.log(await sendTommorrowConfirmedMessage(phone_number_id,"4-8pm"));
-        }
-        else{
-          console.log(await sendSlotConfirm(phone_number_id,from,button_message));
-        }
-        
       }
     }
     res.sendStatus(200);
@@ -98,12 +104,12 @@ app.post("/webhook",async  (req, res) => {
 });
 
 // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
-// info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests 
+// info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests
 app.get("/webhook", (req, res) => {
   /**
    * UPDATE YOUR VERIFY TOKEN
    *This will be the Verify Token value when you set up webhook
-  **/
+   **/
   const verify_token = process.env.VERIFY_TOKEN;
 
   // Parse params from the webhook verification request
