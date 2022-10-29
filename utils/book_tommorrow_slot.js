@@ -6,7 +6,7 @@ async function bookTomorrowSlot(from, phone, slot) {
   const token = process.env.WHATSAPP_TOKEN;
   try {
     const r = await axios.post(
-      `https://graph.facebook.com/v14.0/109549668467205/messages`,
+      `https://graph.facebook.com/v15.0/107625022002368/messages`,
       {
         messaging_product: "whatsapp",
         to: phone,
